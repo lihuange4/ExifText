@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.text3).setOnClickListener(v -> {
             FixBug.executeFix(this.getApplication());
         });
+
+
+        mImg.setOnClickListener(v -> {
+            Drawable innerImg = TestGetOtherAppResource.getUninstallResource(this);
+            if (innerImg != null) {
+                mImg.setImageDrawable(innerImg);
+            }
+        });
     }
 
     @Override
@@ -57,48 +66,45 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == GET_IMG_CODE) {
 
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    int attributeInt = 0;
-                    try {
-                        ExifInterface exifInterface = new ExifInterface(mPath);
-                        attributeInt = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
-                        Log.i(TAG, "attributeInt : " + attributeInt);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            executor.execute(() -> {
+                int attributeInt = 0;
+                try {
+                    ExifInterface exifInterface = new ExifInterface(mPath);
+                    attributeInt = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                    Log.i(TAG, "attributeInt : " + attributeInt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                File file = new File(mPath);
+
+                if (file.exists() && file.isFile()) {
+                    int imgWidth = 320;
+                    Bitmap bitmap = null;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    options.inSampleSize = options.outWidth / imgWidth;
+                    options.inJustDecodeBounds = false;
+
+                    Bitmap bitmap2 = BitmapFactory.decodeFile(file.getPath(), options);
+                    if (attributeInt == ExifInterface.ORIENTATION_ROTATE_90) {
+                        Matrix matrix = new Matrix();
+                        matrix.preRotate(90);
+                        bitmap = Bitmap.createBitmap(bitmap2, 0, 0, options.outWidth, options.outHeight,
+                                matrix,
+                                false);
+                    } else {
+                        bitmap = bitmap2;
                     }
 
-                    File file = new File(mPath);
+                    final Bitmap finalBitmap = bitmap;
 
-                    if (file.exists() && file.isFile()) {
-                        int imgWidth = 320;
-                        Bitmap bitmap = null;
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        options.inSampleSize = options.outWidth / imgWidth;
-                        options.inJustDecodeBounds = false;
-
-                        Bitmap bitmap2 = BitmapFactory.decodeFile(file.getPath(), options);
-                        if (attributeInt == ExifInterface.ORIENTATION_ROTATE_90) {
-                            Matrix matrix = new Matrix();
-                            matrix.preRotate(90);
-                            bitmap = Bitmap.createBitmap(bitmap2, 0, 0, options.outWidth, options.outHeight,
-                                    matrix,
-                                    false);
-                        } else {
-                            bitmap = bitmap2;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mImg.setImageBitmap(finalBitmap);
                         }
-
-                        final Bitmap finalBitmap = bitmap;
-
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mImg.setImageBitmap(finalBitmap);
-                            }
-                        });
-                    }
+                    });
                 }
             });
         }
