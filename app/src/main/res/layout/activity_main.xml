@@ -28,11 +28,11 @@
         android:padding="6dp"
         android:text="@string/open_xj"
         app:layout_constrainedWidth="true"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/text3"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/text3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         />
 
     <TextView
@@ -112,6 +112,38 @@
         app:layout_constraintLeft_toLeftOf="@id/barrier"
         app:layout_constraintRight_toRightOf="parent"
         />
+
+    <TextView
+        android:id="@+id/test_delay_handler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:text="测试一个延时的handler"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="#f0f"/>
+
+    <TextView
+        android:id="@+id/test_handler_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试一个延时的handler"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@id/test_delay_handler"
+        app:layout_constraintLeft_toRightOf="@id/test_delay_handler"
+        android:background="#ff0"/>
+
+    <TextView
+        android:id="@+id/test_messenger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送messenger"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@id/test_delay_handler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="30dp"
+        android:background="#ff0"/>
 
 
 </android.support.constraint.ConstraintLayout>

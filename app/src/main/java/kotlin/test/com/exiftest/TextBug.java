@@ -8,7 +8,9 @@ import android.widget.Toast;
  * Created by lihuange on 2018/10/25.
  */
 public class TextBug {
-    public static void execute(Context context){
+    public void execute(Context context){
         Toast.makeText(context, "测试一个bug: " + 10 / 0, Toast.LENGTH_LONG).show();
     }
+
+//    public native void testNative();
 }

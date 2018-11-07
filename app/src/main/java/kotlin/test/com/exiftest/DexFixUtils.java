@@ -79,6 +79,8 @@ public class DexFixUtils {
                 //重新赋值给PathClassLoader 中的exElements数组
                 Object pathList = getPathList(pathClassLoader);
                 setField(pathList, pathList.getClass(), "dexElements", newDexElements);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
