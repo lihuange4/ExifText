@@ -31,9 +31,17 @@
             android:name=".MyService"
             android:enabled="true"
             android:exported="true"
-            android:process=":test"
-            >
+            android:process=":test">
         </service>
+        <service
+            android:name=".MyService2"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":test2">
+        </service>
+
+        <activity android:name=".Main2Activity">
+        </activity>
     </application>
 
 </manifest>

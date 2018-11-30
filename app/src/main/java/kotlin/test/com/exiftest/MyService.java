@@ -15,32 +15,29 @@ import kotlin.test.com.exiftest.test_ipc.IPC;
 public class MyService extends Service {
 
     private static final String TAG = "MyService";
-    private Messenger mMessenger = new Messenger(new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case IPC.Msg.MSG_CLIENT_TO_SERVICE: {
-                    Bundle data = msg.getData();
-                    String s = data.toString();
-                    Log.i(IPC.Key.TAG, "服务端收到客户端：" + s);
+    private Messenger mMessenger = new Messenger(new Handler(msg -> {
+        switch (msg.what) {
+            case IPC.Msg.MSG_CLIENT_TO_SERVICE: {
+                Bundle data = msg.getData();
+                String s = data.toString();
+                Log.i(IPC.Key.TAG, "服务端收到客户端：" + s);
 
-                    try {
+                try {
 
-                        Messenger replyTo = msg.replyTo;
-                        Message message = Message.obtain(null, IPC.Msg.MSG_SERVICE_TO_CLIENT);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(IPC.Key.TAG, "服务收到， 服务发送");
-                        message.setData(bundle);
-                        replyTo.send(message);
+                    Messenger replyTo = msg.replyTo;
+                    Message message = Message.obtain(null, IPC.Msg.MSG_SERVICE_TO_CLIENT);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(IPC.Key.TAG, "服务收到， 服务发送");
+                    message.setData(bundle);
+                    replyTo.send(message);
 
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
-                break;
             }
-            return true;
+            break;
         }
+        return true;
     }));
 
     public MyService() {
@@ -70,4 +67,6 @@ public class MyService extends Service {
 
         return super.onUnbind(intent);
     }
+
+
 }

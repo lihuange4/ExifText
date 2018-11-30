@@ -37,7 +37,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import kotlin.test.com.exiftest.test_ipc.IPC;
+import kotlin.test.com.processorlib.ZyaoAnnotation;
 
+@ZyaoAnnotation(
+        name = "Zyao",
+        text = "Hello !!! Welcome "
+)
 public class MainActivity extends AppCompatActivity {
 
     private static final int GET_IMG_CODE = 10001;
@@ -112,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.test_open_activity2).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+        });
+
 
         handleBindService();
 
@@ -119,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleBindService() {
         Intent intent = new Intent(getApplicationContext(), MyService.class);
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+        bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "onServiceConnected");
@@ -308,6 +317,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mServiceConnection != null ){
+            this.unbindService(mServiceConnection);
+        }
+    }
 
     private Executor executor = Executors.newSingleThreadExecutor();
 }
